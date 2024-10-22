@@ -1,36 +1,20 @@
-import json
 from datetime import datetime as dt
 
 import plotly.graph_objects as go
 from dash import Dash, Input, Output, callback, dcc, html
-from google.cloud import bigquery
 
+from dataloader import DataLoader
 from plotdata import PlotData
-
-# import os
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "app/dashboard-app-001-ea121aebf83c.json"
 
 # Dashアプリを作成
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css'] # cssの設定
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 # データの読み込み
-with open('app/dataset.json', encoding="utf-8") as f:
-    dataset = json.load(f)
-
-client = bigquery.Client()
-dataset_dict={}
-for k, v in dataset['dataset_name'].items():
-    query_template = f"""
-    SELECT *
-    FROM `dashboard-app-001.dash_data.{v}`
-    """
-    query_job = client.query(query_template)
-    df = query_job.to_dataframe()
-    dataset_dict.update([(k, df)])
+data_loader = DataLoader('app/dataset.json')
+dataset, dataset_dict = data_loader.load_data()
 
 plotdata = PlotData(dataset_dict)
-
 month_num, month_list = plotdata.month_diff(dt(2020,5,1), dt(2021,12,31))
 
 # レイアウトを定義
