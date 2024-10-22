@@ -1,0 +1,17 @@
+services:
+  app:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dash-app
+    container_name: 'dashboard'
+    working_dir: '/root/'
+    volumes:
+      - ./app:/root/app
+      - ./dashboard-app-001.json:/app/credentials.json
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+      - TZ=Asia/Tokyo
+    ports:
+      - "8050:8050"
