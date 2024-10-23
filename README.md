@@ -1,4 +1,4 @@
-# dashborad-app
+# dashboard-app
 
 Dash + Plotly で作成した分析ダッシュボード
 
